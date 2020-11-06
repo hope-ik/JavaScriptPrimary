@@ -1,2 +1,2 @@
 # JavaScriptPrimary
-JavaScript短训精炼版
+JavaScript汇总
