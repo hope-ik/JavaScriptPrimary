@@ -91,23 +91,23 @@ const deepCopy = (obj) => {
 }
 
 let deepObj = deepCopy(target2)
-console.log(deepObj)//成功把方法与属性拷贝
+console.log(deepObj) //成功把方法与属性拷贝
 
 
 //使用唯一标识属性Symbol试试
 
- let target3={
-     [Symbol("name")]:"jojo",
-     age:25,
-     friend: {
+let target3 = {
+    [Symbol("name")]: "jojo",
+    age: 25,
+    friend: {
         name: 'Michel',
         age: 30
     },
     dirFn: () => {},
     Undefin: undefined
- }
+}
 
-let deepObj2=deepCopy(target3)//发现Symbol属性不见了
+let deepObj2 = deepCopy(target3) //发现Symbol属性不见了
 // console.log(deepObj2)
 
 //我们发现Symbol属性丢了，那怎么办呢？这个原因是for...in...循环拿不到Symbol属性，如果要拿Symbol属性，
@@ -118,7 +118,7 @@ let deepObj2=deepCopy(target3)//发现Symbol属性不见了
 
 const deepCopy2 = (obj) => {
     const result = Array.isArray(obj) ? [] : {}
-    for (let i of Reflect.ownKeys(obj)) {
+    for (let i of Reflect.ownKeys(obj)) { //Reflect.ownKeys会返回对象的所有自有属性
         if (obj.hasOwnProperty(i)) {
             // 如果属性也是对象，递归调用自身
             if (obj[i] && typeof obj[i] === 'object') {
@@ -131,6 +131,65 @@ const deepCopy2 = (obj) => {
     return result
 }
 
-let deepObj3=deepCopy2(target3)//成功取到对象所有的自有属性
+let deepObj3 = deepCopy2(target3) //成功取到对象所有的自有属性
 // console.log(deepObj3)
 
+
+//浅拷贝的应用：mixin--混合模式
+
+const mixin = {
+    say() {
+        console.log(`${this.name}在说话`)
+    },
+    run() {
+        console.log(`${this.name}在跑步`)
+    }
+}
+
+class Student {
+    constructor(name) {
+        this.name = name
+    }
+}
+
+Object.assign(Student.prototype, mixin)
+
+let Student1 = new Student("77")
+
+Student1.say(); //77在说话
+Student1.run(); //77在跑步
+//上面的代码我们没有用继承，而是用了拷贝的方式，让Student类具有了mixin的方法，我们直接将mixin里面的方法复制到了Student的原型链上
+
+
+
+
+//深拷贝应用：pick函数
+const pick = (originObj, property) => {
+    const map = new WeakMap();
+
+    function dp(obj) {
+        const result = Array.isArray(obj) ? [] : {};
+
+        const existObj = map.get(obj);
+
+        if (existObj) {
+            return existObj;
+        }
+
+        map.set(obj, result);
+
+        for (let key of Reflect.ownKeys(obj)) {
+            if (obj.hasOwnProperty(key) && key === property) {
+                if (obj[key] && typeof obj[key] === 'object') {
+                    result[key] = dp(obj[key])
+                } else {
+                    result[key] = obj[key];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    return dp(originObj);
+}
