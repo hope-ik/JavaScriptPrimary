@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- data-main attribute tells require.js to load
+             scripts/main.js after require.js loads. -->
+    <!-- async属性和defer属性表明这个文件需要异步加载，避免网页失去响应。IE只支持defer属性，而不支持async属性。 -->
+    <!-- data-main属性的作用是指定网页程序的主模块。即js目录下面的main.js，这个文件会第一个被require.js加载。由于require.js默认的文件后缀名是js，所以可以省略掉".js"简写成main。 -->
+    <script defer async="true" src="require.js" data-main='main'></script>
+</head>
+
+<body>
+
+    <script src=""></script>
+</body>
+
+</html>
